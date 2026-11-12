@@ -1,0 +1,16 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: instructor1@example.com
+  name: Anna Instruktor
+  role: instructor
+
+two:
+  email: instructor2@example.com
+  name: Piotr Instruktor
+  role: instructor
+
+student:
+  email: student@example.com
+  name: Jan Uczeń
+  role: participant
