@@ -71,3 +71,5 @@ gem "rspec-rails", "~> 8.1", groups: [ :development, :test ]
 gem "factory_bot_rails", "~> 6.5", groups: [ :development, :test ]
 
 gem "shoulda-matchers", "~> 8.0", group: :test
+
+gem "rails-i18n", "~> 8.1"
