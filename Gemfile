@@ -1,7 +1,7 @@
 source "https://rubygems.org"
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem "rails", "~> 8.0.2", ">= 8.0.2.1"
+gem "rails", "~> 8.1"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use sqlite3 as the database for Active Record
@@ -67,7 +67,7 @@ gem "ruby-lsp-rails", "~> 0.4.8", group: :development
 
 gem "tailwindcss-rails", "~> 4.7"
 
-gem "rspec-rails", "~> 8.1", groups: [:development, :test]
-gem "factory_bot_rails", "~> 6.5", groups: [:development, :test]
+gem "rspec-rails", "~> 8.1", groups: [ :development, :test ]
+gem "factory_bot_rails", "~> 6.5", groups: [ :development, :test ]
 
 gem "shoulda-matchers", "~> 8.0", group: :test
