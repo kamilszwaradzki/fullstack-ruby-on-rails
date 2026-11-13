@@ -1,1 +1,10 @@
 @import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+@layer components {
+  .btn { @apply rounded px-4 py-2 font-medium; }
+  .btn-primary { @apply bg-blue-600 text-white hover:bg-blue-700; }
+  .btn-success { @apply bg-green-600 text-white hover:bg-green-700; }
+  .btn-notice { @apply bg-yellow-600 text-white hover:bg-yellow-700; }
+  .btn-danger { @apply bg-red-600 text-white hover:bg-red-700; }
+}

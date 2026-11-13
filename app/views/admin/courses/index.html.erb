@@ -1,2 +1,27 @@
-<h1 class="font-bold">Panel kursów</h1>
 <%= render "admin/nav" %>
+<h1 class="font-bold">Panel kursów</h1>
+<%= link_to 'Nowy kurs', new_admin_course_path, class: "btn btn-primary w-50 my-2" %>
+<% if @courses.empty? %>
+    Brak kursów.
+<% else %>
+    <table>
+    <tr>
+        <th>Nazwa kursu</th>
+        <th>Opis</th>
+        <th>Poziom zaawansowania</th>
+        <th>Akcje</th>
+    </tr>
+    <% @courses.each do |course| %>
+    <tr>
+        <td><%= course.name %></td>
+        <td><%= course.description %></td>
+        <td><%= course.level %></td>
+        <td>
+            <%= link_to 'Pokaż', admin_course_path(course), class: "btn btn-primary w-25" %>
+            <%= link_to 'Edytuj', edit_admin_course_path(course), class: "btn btn-success w-25" %>
+            <%= button_to 'Usuń', admin_course_path(course), method: :delete, class: "btn btn-danger w-25 my-1", form_class: "inline" %>
+        </td>
+    </tr>
+    <% end %>
+    </table>
+<% end %>

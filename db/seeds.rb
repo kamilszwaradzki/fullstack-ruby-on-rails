@@ -22,3 +22,16 @@ User.find_or_create_by!(email_address: 'student@example.com') do |user|
   user.password = 'Student789!'
   user.role = :participant
 end
+
+Course.find_or_create_by!(name: 'Salsa – początkujący') do |course|
+  course.description = 'Salsa dla początkujących'
+  course.level = :beginner
+end
+Course.find_or_create_by!(name: 'Salsa – zaawansowany') do |course|
+  course.description = 'Salsa dla zaawansowanych'
+  course.level = :intermediate
+end
+Course.find_or_create_by!(name: 'Salsa – tancerz') do |course|
+  course.description = 'Salsa poziom HARD!'
+  course.level = :advanced
+end

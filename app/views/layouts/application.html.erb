@@ -27,7 +27,7 @@
       <%= alert %>
       <%= notice %>
       <% if authenticated? %>
-        <%= button_to "Wyloguj", session_path, method: :delete %>
+        <%= button_to "Wyloguj", session_path, method: :delete, class: "btn btn-notice w-25" %>
       <% end %>
       <%= yield %>
     </main>
