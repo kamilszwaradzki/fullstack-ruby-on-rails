@@ -64,3 +64,10 @@ end
 
 gem "ruby-lsp", "~> 0.26", group: :development
 gem "ruby-lsp-rails", "~> 0.4.8", group: :development
+
+gem "tailwindcss-rails", "~> 4.7"
+
+gem "rspec-rails", "~> 8.1", groups: [:development, :test]
+gem "factory_bot_rails", "~> 6.5", groups: [:development, :test]
+
+gem "shoulda-matchers", "~> 8.0", group: :test
