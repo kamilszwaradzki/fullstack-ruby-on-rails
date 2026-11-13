@@ -25,5 +25,10 @@ module FullstackRubyOnRails
     config.time_zone = "Warsaw"
     config.i18n.default_locale = :pl
     # config.eager_load_paths << Rails.root.join("extras")
+    config.generators do |g|
+      g.helper false
+      g.helper_specs false
+      g.view_specs false
+    end
   end
 end
