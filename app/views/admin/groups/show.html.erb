@@ -33,11 +33,13 @@
     <tr>
         <th>Termin</th>
         <th>Odwołane</th>
+        <th>Akcje</th>
     </tr>
     <% @group.lessons.order(:starts_at).each do |lesson| %>
     <tr>
         <td><%= l(lesson.starts_at, format: :short) %></td>
-        <td><%= lesson.cancelled_at %></td>
+        <td><%= lesson.cancelled? ? 'tak' : 'nie' %></td>
+        <td><% unless lesson.cancelled? %> <%= button_to "Odwołaj", admin_group_lesson_cancellation_path(@group, lesson), form: { data: { turbo_confirm: 'Chcesz odwołać lekcję?' } }, class: "btn btn-danger w-25 my-1" %> <% end %></td>
     </tr>
     <% end %>
 </table>

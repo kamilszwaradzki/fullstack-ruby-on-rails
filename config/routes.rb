@@ -18,6 +18,9 @@ Rails.application.routes.draw do
     resources :courses
     resources :groups do
       resource :lesson_generation, only: :create
+      resources :lessons, only: [] do
+        resource :cancellation, only: :create
+      end
     end
   end
 end
