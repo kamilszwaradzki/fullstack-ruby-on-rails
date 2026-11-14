@@ -16,6 +16,8 @@ Rails.application.routes.draw do
   namespace :admin do
     root "dashboard#index"
     resources :courses
-    resources :groups
+    resources :groups do
+      resource :lesson_generation, only: :create
+    end
   end
 end
