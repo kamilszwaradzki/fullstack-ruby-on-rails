@@ -12,6 +12,23 @@ Brak grup.
             <li><%= group.instructor.name %></li>
             <li>Wolne miejsca: <%= group.free_spots %> z <%= group.capacity %></li>
             <li>
+              <%
+                button_label = group.full? ? "Dołącz do listy rezerwowej" : "Zapisz się"
+                enrollment = Current.user.enrollment_for(group)
+              %>
+              <% if enrollment.nil? %>
+                <%= button_to button_label, enrollments_path, params: { group_id: group.id }, class: "btn btn-success" %>
+              <% elsif enrollment.active? %>
+                <div class="bg-green-400 p-3 my-2 w-75">
+                  Jesteś zapisany
+                </div>
+              <% else %>
+                <div class="bg-yellow-400 p-3 my-2 w-auto">
+                  Jesteś na liście rezerwowej (pozycja <%= enrollment.position %>)
+                </div>
+              <% end %>
+            </li>
+            <li>
               <% if group.lessons.upcoming.empty? %>
                 Brak zaplanowanych zajęć.
               <% else %>

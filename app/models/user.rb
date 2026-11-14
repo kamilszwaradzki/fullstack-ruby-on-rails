@@ -12,4 +12,8 @@ class User < ApplicationRecord
   has_many :enrollments
   has_many :passes
   has_many :attendances
+
+  def enrollment_for(group)
+    enrollments.where(status: [ :active, :waitlisted ]).find_by(group: group)
+  end
 end
