@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_14_121709) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_14_145016) do
   create_table "attendances", force: :cascade do |t|
     t.integer "lesson_id", null: false
     t.integer "user_id", null: false
@@ -37,6 +37,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_14_121709) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_enrollments_on_group_id"
+    t.index ["user_id", "group_id"], name: "index_enrollments_on_user_id_and_group_id", unique: true
     t.index ["user_id"], name: "index_enrollments_on_user_id"
   end
 
