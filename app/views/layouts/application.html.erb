@@ -24,8 +24,16 @@
 
   <body>
     <main class="container mx-auto mt-28 px-5 flex flex-col">
-      <%= alert %>
-      <%= notice %>
+      <% if alert %>
+        <div class="bg-yellow-400 text-blue-600 p-3 my-2 w-75">
+        <%= alert %>
+        </div>
+      <% end %>
+      <% if notice %>
+        <div class="bg-blue-600 text-blue-100 p-3 my-2 w-75">
+        <%= notice %>
+        </div>
+      <% end %>
       <% if authenticated? %>
         <%= button_to "Wyloguj", session_path, method: :delete, class: "btn btn-notice w-25" %>
       <% end %>
