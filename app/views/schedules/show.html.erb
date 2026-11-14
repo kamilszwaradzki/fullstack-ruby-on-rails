@@ -1,0 +1,39 @@
+<% if @groups.empty? %>
+Brak grup.
+<% else %>
+  <% @groups.group_by(&:weekday).each do |weekday, groups| %>
+  <h1 class="my-2 font-extrabold"><%= I18n.t("date.day_names")[weekday] %></h1>
+    <% groups.each do |group| %>
+    <div class="max-w-sm rounded overflow-hidden shadow-lg">
+      <div class="px-6 py-4">
+        <div class="font-bold text-xl mb-2"><%= group.course.name %></div>
+          <ul class="text-gray-700 text-base">
+            <li><%= group.starts_at.strftime("%H:%M") %></li>
+            <li><%= group.instructor.name %></li>
+            <li>Wolne miejsca: <%= group.free_spots %> z <%= group.capacity %></li>
+            <li>
+              <% if group.lessons.upcoming.empty? %>
+                Brak zaplanowanych zajęć.
+              <% else %>
+                <h1 class="font-extrabold mt-10 text-green-600 mx-auto">Najbliższe zajęcia</h1>
+                <hr/> 
+                <table>
+                    <tr>
+                        <th>Termin</th>
+                        <th>Odwołane</th>
+                    </tr>
+                    <% group.lessons.upcoming.order(:starts_at).limit(4).each do |lesson| %>
+                    <tr>
+                        <td><%= l(lesson.starts_at, format: :short) %></td>
+                        <td><%= lesson.cancelled? ? 'tak' : 'nie' %></td>
+                    </tr>
+                    <% end %>
+                </table>
+              <% end %>
+            </li>
+          </ul>
+      </div>
+    </div>
+    <% end %>
+  <% end %>
+<% end %>

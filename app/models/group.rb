@@ -9,4 +9,16 @@ class Group < ApplicationRecord
 
   has_many :lessons, dependent: :restrict_with_error
   has_many :enrollments, dependent: :restrict_with_error
+
+  def taken_spots
+    enrollments.active.count
+  end
+
+  def free_spots
+    capacity - taken_spots
+  end
+
+  def full?
+    capacity <= taken_spots
+  end
 end
