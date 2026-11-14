@@ -1,2 +1,33 @@
 <%= render "admin/nav" %>
 <h1 class="font-bold">Panel Grup</h1>
+<%= link_to 'Nowa grupa', new_admin_group_path, class: "btn btn-primary w-50 my-2" %>
+<% if @groups.empty? %>
+    Brak grup.
+<% else %>
+    <table>
+    <tr>
+        <th>Kurs</th>
+        <th>Instruktor</th>
+        <th>Dzień tygodnia</th>
+        <th>Godzina</th>
+        <th>Czas trwania</th>
+        <th>Pojemność</th>
+        <th>Akcje</th>
+    </tr>
+    <% @groups.each do |group| %>
+    <tr>
+        <td><%= group.course.name %></td>
+        <td><%= group.instructor.name %></td>
+        <td><%= I18n.t("date.day_names")[group.weekday] %></td>
+        <td><%= group.starts_at.strftime("%H:%M") %></td>
+        <td><%= group.duration %> min</td>
+        <td><%= group.capacity %></td>
+        <td>
+            <%= link_to 'Pokaż', admin_group_path(group), class: "btn btn-primary w-25" %>
+            <%= link_to 'Edytuj', edit_admin_group_path(group), class: "btn btn-success w-25" %>
+            <%= button_to 'Usuń', admin_group_path(group), method: :delete, class: "btn btn-danger w-25 my-1", form_class: "inline" %>
+        </td>
+    </tr>
+    <% end %>
+    </table>
+<% end %>

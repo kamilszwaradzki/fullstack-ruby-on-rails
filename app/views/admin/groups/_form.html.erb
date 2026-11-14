@@ -1,0 +1,25 @@
+<%= form_with model: [:admin, @group] do |form| %>
+<% if @group.errors.any? %>
+<ul>
+    <% @group.errors.full_messages.each do |message| %>
+    <li>
+        <%= message %>
+    </li>
+    <% end %>
+</ul>
+<% end %>
+<%= form.label :course_id, "Kurs" %> 
+<%= form.collection_select :course_id, Course.all, :id, :name, { prompt: "Wybierz kurs" }, { class: "my-3" } %>
+<%= form.label :instructor_id, "Instruktor" %> 
+<%= form.collection_select :instructor_id, User.instructor, :id, :name, {}, class: "my-3" %>
+<%= form.label :weekday, "Dzień tygodnia" %> 
+<%= form.select :weekday, I18n.t("date.day_names").each_with_index.to_a, {}, class: "my-3" %>
+<%= form.label :starts_at, "Godzina" %> 
+<%= form.time_field :starts_at, class: "my-3" %>
+<%= form.label :duration, "Czas trwania" %> 
+<%= form.number_field :duration, min: 1, class: "my-3" %>
+<%= form.label :capacity, "Pojemność" %> 
+<%= form.number_field :capacity, min: 1, class: "my-3" %>
+<br/>
+<%= form.submit class: "btn btn-success my-2" %>
+<% end %>
