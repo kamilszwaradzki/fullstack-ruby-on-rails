@@ -1,0 +1,109 @@
+<%= render "participant/nav" %>
+
+<h1 class="font-bold text-xl mb-4">Moje zajęcia</h1>
+
+<section class="mb-6">
+  <h2 class="font-bold text-lg mb-2">Mój karnet</h2>
+
+  <% if @pass %>
+    <p>
+      Pozostałe wejścia:
+      <strong><%= @pass.entries_left %>/<%= @pass.entries_total %></strong>
+    </p>
+
+    <p>
+      Ważny do:
+      <%= l(@pass.valid_until, format: :short) %>
+    </p>
+
+    <% if @pass.low_entries? %>
+      <p class="text-amber-600">
+        Zostało Ci tylko jedno wejście!
+      </p>
+    <% end %>
+
+    <% if @pass.expiring_soon? %>
+      <p class="text-amber-600">
+        Twój karnet wygasa w ciągu najbliższych 7 dni.
+      </p>
+    <% end %>
+  <% else %>
+    <p class="text-red-600 font-bold">
+      Brak ważnego karnetu.
+    </p>
+  <% end %>
+</section>
+
+<section class="mb-6">
+  <h2 class="font-bold text-lg mb-2">Moje grupy</h2>
+
+  <% if @enrollments.empty? %>
+    <p>Nie jesteś zapisany do żadnej grupy.</p>
+  <% else %>
+    <div class="space-y-3">
+      <% @enrollments.each do |enrollment| %>
+        <% group = enrollment.group %>
+        <div id="<%= dom_id(enrollment) %>">
+          <div class="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+            <h3 class="font-bold">
+              <%= group.course.name %>
+            </h3>
+
+            <p>
+              <%= I18n.t("date.day_names")[group.weekday] %>,
+              <%= group.starts_at.strftime("%H:%M") %>
+            </p>
+
+            <p>
+              Instruktor: <%= group.instructor.name %>
+            </p>
+
+            <% if enrollment.active? %>
+              <p> Status: Aktywny </p>
+            <% else %>
+              <p>
+                Status: Lista rezerwowa,
+                miejsce <%= enrollment.position %>
+              </p>
+            <% end %>
+
+            <%= button_to "Wypisz",
+                enrollment_path(enrollment),
+                method: :delete,
+                form: { data: { turbo_confirm: 'Chcesz się wypisać?' } }, 
+                class: "btn btn-danger mt-2" %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</section>
+
+<section class="mb-6">
+  <h2 class="font-bold text-lg mb-2">Najbliższe zajęcia</h2>
+
+  <% if @upcoming_lessons.empty? %>
+    <p>Brak nadchodzących zajęć.</p>
+  <% else %>
+    <div class="space-y-2">
+      <% @upcoming_lessons.each do |lesson| %>
+
+        <div class="rounded-lg border border-gray-200 bg-white p-3 shadow-sm">
+          <p class="<%= 'line-through text-red-600' if lesson.cancelled? %>">
+            <strong><%= lesson.group.course.name %></strong>
+          </p>
+
+          <p class="<%= 'line-through text-red-600' if lesson.cancelled? %>">
+            <%= l(lesson.starts_at, format: :short) %>
+          </p>
+
+          <% if lesson.cancelled? %>
+            <p class="text-red-600 font-bold">
+              Zajęcia odwołane
+            </p>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  <% end %>
+</section>

@@ -43,17 +43,16 @@ class EnrollmentsController < ApplicationController
     end
 
     group.reload
-    respond_with_card(group, flash_type, message)
+    respond_with_card(group, flash_type, message, enrollment: enrollment)
   end
 
   private
 
-  def respond_with_card(group, flash_type, message)
+  def respond_with_card(group, flash_type, message, enrollment: nil)
     respond_to do |format|
       format.turbo_stream do
         flash.now[flash_type] = message
-
-        render turbo_stream: [
+        streams = [
           turbo_stream.replace(
             group,
             partial: "schedules/group_card",
@@ -64,6 +63,10 @@ class EnrollmentsController < ApplicationController
             partial: "layouts/flash"
           )
         ]
+
+        streams << turbo_stream.remove(enrollment) if enrollment
+
+        render turbo_stream: streams
       end
 
       format.html do
