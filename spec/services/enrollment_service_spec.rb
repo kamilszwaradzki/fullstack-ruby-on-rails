@@ -71,4 +71,69 @@ RSpec.describe EnrollmentService, type: :service do
       end
     end
   end
+
+  describe "#cancel" do
+    context "when the user is active" do
+      before do
+        create(:enrollment, user: user, group: group, status: :active)
+      end
+
+      it "returns :cancelled" do
+        expect(service.cancel).to eq(:cancelled)
+      end
+    end
+    context "when someone is on the waitlist" do
+      before do
+        create(:enrollment, user: user, group: group, status: :active)
+      end
+      let!(:waiting) { create(:enrollment, group: group, status: :waitlisted, position: 1) }
+
+      it "one person on waitlist" do
+        service.cancel
+        waiting.reload
+        expect(waiting.status).to eq('active')
+        expect(waiting.position).to eq(nil)
+      end
+    end
+
+    context "when the user is not enrolled" do
+      it "returns :uncancellable" do
+        expect(service.cancel).to eq(:uncancellable)
+      end
+    end
+
+    context "when two people are on the waitlist" do
+      before do
+        create(:enrollment, user: user, group: group, status: :active)
+      end
+      let!(:first_waiting) { create(:enrollment, group: group, status: :waitlisted, position: 1) }
+      let!(:second_waiting) { create(:enrollment, group: group, status: :waitlisted, position: 2) }
+
+      it "two people on waitlist" do
+        service.cancel
+        first_waiting.reload
+        second_waiting.reload
+        expect(first_waiting.status).to eq('active')
+        expect(first_waiting.position).to eq(nil)
+        expect(second_waiting.status).to eq('waitlisted')
+        expect(second_waiting.position).to eq(1)
+      end
+    end
+    context "when a waitlisted user cancels" do
+      before do
+        create(:enrollment, user: user, group: group, status: :waitlisted, position: 1)
+      end
+      let!(:active_member) { create(:enrollment, group: group, status: :active, position: nil) }
+      let!(:next_waiting) { create(:enrollment, group: group, status: :waitlisted, position: 2) }
+      it "does not promote anyone and moves the queue up" do
+        service.cancel
+        active_member.reload
+        next_waiting.reload
+        expect(enrollment.status).to eq('cancelled')
+        expect(active_member.status).to eq('active')
+        expect(next_waiting.status).to eq('waitlisted')
+        expect(next_waiting.position).to eq(1)
+      end
+    end
+  end
 end

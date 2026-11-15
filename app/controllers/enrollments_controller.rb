@@ -14,4 +14,16 @@ class EnrollmentsController < ApplicationController
       redirect_to schedule_path, alert: "Coś poszło nie tak..."
     end
   end
+  def destroy
+    @enrollment = Current.user.enrollments.find(params[:id])
+    result = EnrollmentService.new(Current.user, @enrollment.group).cancel
+    case result
+    when :uncancellable
+      redirect_to schedule_path, alert: "Wypisanie się jest niewykonalne"
+    when :cancelled
+      redirect_to schedule_path, notice: "Zostałeś wypisany"
+    else
+      redirect_to schedule_path, alert: "Coś poszło nie tak..."
+    end
+  end
 end

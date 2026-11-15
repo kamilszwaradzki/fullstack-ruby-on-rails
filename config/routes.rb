@@ -15,7 +15,7 @@ Rails.application.routes.draw do
   # root "home#index"
   resource :schedule, only: :show
   root "schedules#show"
-  resources :enrollments, only: :create
+  resources :enrollments, only: [ :create, :destroy ]
   namespace :admin do
     root "dashboard#index"
     resources :courses

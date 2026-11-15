@@ -19,10 +19,12 @@ Brak grup.
               <% if enrollment.nil? %>
                 <%= button_to button_label, enrollments_path, params: { group_id: group.id }, class: "btn btn-success" %>
               <% elsif enrollment.active? %>
+              <%= button_to 'Wypisz się', enrollment_path(enrollment), method: :delete, form: { data: { turbo_confirm: 'Chcesz się wypisać?' } }, class: "btn btn-danger" %>
                 <div class="bg-green-400 p-3 my-2 w-75">
                   Jesteś zapisany
                 </div>
               <% else %>
+              <%= button_to 'Wypisz się', enrollment_path(enrollment), method: :delete, form: { data: { turbo_confirm: 'Chcesz się wypisać?' } }, class: "btn btn-danger" %>
                 <div class="bg-yellow-400 p-3 my-2 w-auto">
                   Jesteś na liście rezerwowej (pozycja <%= enrollment.position %>)
                 </div>
