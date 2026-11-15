@@ -17,6 +17,11 @@ User.find_or_create_by!(email_address: 'instructor@example.com') do |user|
   user.password = 'Instructor456!'
   user.role = :instructor
 end
+User.find_or_create_by!(email_address: 'instructor2@example.com') do |user|
+  user.name = 'instructor2'
+  user.password = 'Instructor2456!'
+  user.role = :instructor
+end
 User.find_or_create_by!(email_address: 'student@example.com') do |user|
   user.name = 'student'
   user.password = 'Student789!'
@@ -34,4 +39,20 @@ end
 Course.find_or_create_by!(name: 'Salsa – tancerz') do |course|
   course.description = 'Salsa poziom HARD!'
   course.level = :advanced
+end
+
+Pass.find_or_create_by!(entries_total: 7) do |pass|
+  pass.user = User.find_by!(email_address: 'student@example.com')
+  pass.valid_until = 1.month.from_now
+  pass.entries_left = 7
+end
+Pass.find_or_create_by!(entries_total: 6) do |pass|
+  pass.user = User.find_by!(email_address: 'student@example.com')
+  pass.valid_until = 2.month.from_now
+  pass.entries_left = 6
+end
+Pass.find_or_create_by!(entries_total: 5) do |pass|
+  pass.user = User.find_by!(email_address: 'student@example.com')
+  pass.valid_until = 3.month.from_now
+  pass.entries_left = 5
 end

@@ -16,4 +16,7 @@ class User < ApplicationRecord
   def enrollment_for(group)
     enrollments.where(status: [ :active, :waitlisted ]).find_by(group: group)
   end
+  def current_pass
+    passes.usable.order(:valid_until).first
+  end
 end
