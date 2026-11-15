@@ -1,0 +1,49 @@
+<div class="max-w-sm rounded overflow-hidden shadow-lg" id="<%= dom_id(group) %>">
+    <div class="px-6 py-4">
+        <div class="font-bold text-xl mb-2"><%= group.course.name %></div>
+        <ul class="text-gray-700 text-base">
+            <li><%= group.starts_at.strftime("%H:%M") %></li>
+            <li><%= group.instructor.name %></li>
+            <li>Wolne miejsca: <%= group.free_spots %> z <%= group.capacity %></li>
+            <li>
+                <%
+                button_label = group.full? ? "Dołącz do listy rezerwowej" : "Zapisz się"
+                enrollment = Current.user.enrollment_for(group)
+                %>
+                <% if enrollment.nil? %>
+                <%= button_to button_label, enrollments_path, params: { group_id: group.id }, class: "btn btn-success" %>
+                <% elsif enrollment.active? %>
+                <%= button_to 'Wypisz się', enrollment_path(enrollment), method: :delete, form: { data: { turbo_confirm: 'Chcesz się wypisać?' } }, class: "btn btn-danger" %>
+                <div class="bg-green-400 p-3 my-2 w-75">
+                    Jesteś zapisany
+                </div>
+                <% else %>
+                <%= button_to 'Wypisz się', enrollment_path(enrollment), method: :delete, form: { data: { turbo_confirm: 'Chcesz się wypisać?' } }, class: "btn btn-danger" %>
+                <div class="bg-yellow-400 p-3 my-2 w-auto">
+                    Jesteś na liście rezerwowej (pozycja <%= enrollment.position %>)
+                </div>
+                <% end %>
+            </li>
+            <li>
+                <% if group.lessons.upcoming.empty? %>
+                Brak zaplanowanych zajęć.
+                <% else %>
+                <h1 class="font-extrabold mt-10 text-green-600 mx-auto">Najbliższe zajęcia</h1>
+                <hr/> 
+                <table>
+                    <tr>
+                        <th>Termin</th>
+                        <th>Odwołane</th>
+                    </tr>
+                    <% group.lessons.upcoming.order(:starts_at).limit(4).each do |lesson| %>
+                    <tr>
+                        <td><%= l(lesson.starts_at, format: :short) %></td>
+                        <td><%= lesson.cancelled? ? 'tak' : 'nie' %></td>
+                    </tr>
+                    <% end %>
+                </table>
+                <% end %>
+            </li>
+        </ul>
+    </div>
+</div>

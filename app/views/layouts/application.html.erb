@@ -24,16 +24,9 @@
 
   <body>
     <main class="container mx-auto mt-28 px-5 flex flex-col">
-      <% if alert %>
-        <div class="bg-yellow-400 text-blue-600 p-3 my-2 w-75">
-        <%= alert %>
-        </div>
-      <% end %>
-      <% if notice %>
-        <div class="bg-blue-600 text-blue-100 p-3 my-2 w-75">
-        <%= notice %>
-        </div>
-      <% end %>
+      <div id="flash">
+      <%= render "layouts/flash" %>
+      </div>
       <% if authenticated? %>
         <%= button_to "Wyloguj", session_path, method: :delete, class: "btn btn-notice w-25" %>
         <%= link_to "Grafik", schedule_path, class: "btn btn-primary my-3 w-25" %>
