@@ -1,64 +1,51 @@
-
 <%= render "instructor/nav" %>
 
 <h1 class="font-bold"><%= "#{l(@lesson.starts_at, format: :short)} #{@group.course.name}" %></h1>
 
 <%= link_to "Wróć", instructor_group_path(@group),
-    class: "btn btn-primary w-25 mb-2" %>
+    class: "btn btn-primary w-1/4 mb-2" %>
 
 <% if @enrollments.empty? %>
   <p>Brak uczestników zajęć.</p>
 <% else %>
-  <table>
-    <thead>
-      <tr>
-        <th>Imię i nazwisko</th>
-        <th>Stan karnetu</th>
-        <th>Obecność</th>
-        <th>Akcje</th>
-      </tr>
-    </thead>
+  <ul class="divide-y">
+    <% @enrollments.each do |enrollment| %>
+      <% user = enrollment.user %>
+      <% attendance = @attendances[user.id] %>
+      <% present = attendance&.present || false %>
+      <% current_pass = user.current_pass %>
 
-    <tbody>
-      <% @enrollments.each do |enrollment| %>
-        <% user = enrollment.user %>
-        <% attendance = @attendances[user.id] %>
-        <% present = attendance&.present || false %>
-        <% current_pass = user.current_pass %>
-
-        <tr>
-          <td><%= user.name %></td>
-
-          <td>
+      <li class="flex justify-between items-center gap-4 py-3">
+        <div>
+          <p class="font-medium"><%= user.name %></p>
+          <p class="text-sm <%= current_pass ? 'text-gray-500' : 'text-red-600' %>">
             <%= current_pass ?
-                "(#{current_pass.entries_left}/#{current_pass.entries_total} do #{l(current_pass.valid_until, format: "%d.%m.%Y")})"
+                "#{current_pass.entries_left}/#{current_pass.entries_total} do #{l(current_pass.valid_until, format: "%d.%m.%Y")}"
                 :
                 "Brak karnetu" %>
-          </td>
+          </p>
+        </div>
 
-          <td>
-            <%= present ? "Obecny" : "Nieobecny" %>
-          </td>
+        <%= form_with url: instructor_group_lesson_attendance_path(@group, @lesson),
+            method: :patch,
+            data: {
+              controller: "attendance",
+              action: "change->attendance#submit"
+            } do %>
 
-          <td>
-            <%= form_with url: instructor_group_lesson_attendance_path(@group, @lesson),
-                method: :patch,
-                data: {
-                  controller: "attendance",
-                  action: "change->attendance#submit"
-                } do %>
+          <%= hidden_field_tag :presence, "0" %>
 
-              <%= hidden_field_tag :presence, "0" %>
+          <%= hidden_field_tag :user_id, user.id %>
 
-              <%= hidden_field_tag :user_id, user.id %>
+          <%= label_tag dom_id(user, :presence), class: "flex items-center gap-2 p-2 cursor-pointer" do %>
+            <span class="sr-only">Obecność: <%= user.name %></span>
+            <%= check_box_tag :presence, "1", present,
+                id: dom_id(user, :presence),
+                class: "w-6 h-6" %>
+          <% end %>
 
-              <%= check_box_tag :presence, "1", present,
-                  id: dom_id(user, :presence) %>
-
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+        <% end %>
+      </li>
+    <% end %>
+  </ul>
 <% end %>
