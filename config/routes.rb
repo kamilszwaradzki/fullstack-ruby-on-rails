@@ -26,4 +26,12 @@ Rails.application.routes.draw do
       end
     end
   end
+  namespace :instructor do
+    root "dashboard#index"
+    resources :groups, only: [ :index, :show ] do
+      resources :lessons, only: :show do
+        resource :attendance, only: :update
+      end
+    end
+  end
 end

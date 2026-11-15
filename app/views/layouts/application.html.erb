@@ -25,11 +25,18 @@
   <body>
     <main class="container mx-auto mt-28 px-5 flex flex-col">
       <div id="flash">
-      <%= render "layouts/flash" %>
+        <%= render "layouts/flash" %>
       </div>
       <% if authenticated? %>
         <%= button_to "Wyloguj", session_path, method: :delete, class: "btn btn-notice w-25" %>
         <%= link_to "Grafik", schedule_path, class: "btn btn-primary my-3 w-25" %>
+        <% if Current.user.admin? %>
+          <%= link_to "Home", admin_root_path, class: "btn btn-primary my-3 w-25" %>
+        <% elsif Current.user.instructor? %>
+          <%= link_to "Home", instructor_root_path, class: "btn btn-primary my-3 w-25" %>
+        <% else %>
+          <%= link_to "Home", root_path, class: "btn btn-primary my-3 w-25" %>
+        <% end %>
       <% end %>
       <%= yield %>
     </main>

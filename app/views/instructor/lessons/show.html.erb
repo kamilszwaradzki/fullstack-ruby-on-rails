@@ -1,0 +1,64 @@
+
+<%= render "instructor/nav" %>
+
+<h1 class="font-bold"><%= "#{l(@lesson.starts_at, format: :short)} #{@group.course.name}" %></h1>
+
+<%= link_to "Wróć", instructor_group_path(@group),
+    class: "btn btn-primary w-25 mb-2" %>
+
+<% if @enrollments.empty? %>
+  <p>Brak uczestników zajęć.</p>
+<% else %>
+  <table>
+    <thead>
+      <tr>
+        <th>Imię i nazwisko</th>
+        <th>Stan karnetu</th>
+        <th>Obecność</th>
+        <th>Akcje</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @enrollments.each do |enrollment| %>
+        <% user = enrollment.user %>
+        <% attendance = @attendances[user.id] %>
+        <% present = attendance&.present || false %>
+        <% current_pass = user.current_pass %>
+
+        <tr>
+          <td><%= user.name %></td>
+
+          <td>
+            <%= current_pass ?
+                "(#{current_pass.entries_left}/#{current_pass.entries_total} do #{l(current_pass.valid_until, format: "%d.%m.%Y")})"
+                :
+                "Brak karnetu" %>
+          </td>
+
+          <td>
+            <%= present ? "Obecny" : "Nieobecny" %>
+          </td>
+
+          <td>
+            <%= form_with url: instructor_group_lesson_attendance_path(@group, @lesson),
+                method: :patch,
+                data: {
+                  controller: "attendance",
+                  action: "change->attendance#submit"
+                } do %>
+
+              <%= hidden_field_tag :presence, "0" %>
+
+              <%= hidden_field_tag :user_id, user.id %>
+
+              <%= check_box_tag :presence, "1", present,
+                  id: dom_id(user, :presence) %>
+
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

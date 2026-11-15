@@ -1,0 +1,45 @@
+<%= render "instructor/nav" %>
+<h1 class="font-bold">Podgląd grupy</h1>
+<%= link_to "Wróć", instructor_groups_path,  class: "btn btn-primary w-25 mb-2" %>
+<table>
+    <tr>
+        <th>Kurs</th>
+        <th>Instruktor</th>
+        <th>Dzień tygodnia</th>
+        <th>Godzina</th>
+        <th>Czas trwania</th>
+        <th>Pojemność</th>
+    </tr>
+    <tr>
+        <td><%= @group.course.name %></td>
+        <td><%= @group.instructor.name %></td>
+        <td><%= I18n.t("date.day_names")[@group.weekday] %></td>
+        <td><%= @group.starts_at.strftime("%H:%M") %></td>
+        <td><%= @group.duration %> min</td>
+        <td><%= @group.capacity %></td>
+    </tr>
+</table>
+<h1 class="font-extrabold mt-10 text-green-600 mx-auto">Zajęcia</h1>
+<hr/>
+<% if @group.lessons.empty? %>
+    Brak zaplanowanych zajęć.
+<% else %>
+<table>
+    <tr>
+        <th>Termin</th>
+        <th>Odwołane</th>
+        <th>Akcje</th>
+    </tr>
+    <% @group.lessons.order(:starts_at).each do |lesson| %>
+    <tr>
+        <td><%= l(lesson.starts_at, format: :short) %></td>
+        <td><%= lesson.cancelled? ? 'tak' : 'nie' %></td>
+        <td>
+        <% unless lesson.cancelled? %>
+            <%= link_to "Obecność", instructor_group_lesson_path(@group, lesson), class: "btn btn-notice w-50" %>
+        <% end %>
+        </td>
+    </tr>
+    <% end %>
+</table>
+<% end %>
