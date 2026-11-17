@@ -1,88 +1,109 @@
-# 'Grafik' czyli mała szkoła tańca
+# Grafik — zapisy i obecność w szkole tańca
 
-### Funkcje (MVP)
+![CI](https://github.com/kamilszwaradzki/fullstack-ruby-on-rails/actions/workflows/ci.yml/badge.svg)
 
-### Admin szkoły:
+Aplikacja dla małej szkoły tańca: uczestnicy zapisują się na zajęcia z grafiku,
+a gdy grupa jest pełna, trafiają na listę rezerwową. Instruktor sprawdza obecność
+na telefonie, a każda obecność zdejmuje wejście z karnetu.
 
-* dodaje kursy (np. „Salsa – początkujący”) i grupy (dzień, godzina, instruktor, limit miejsc),
-* z harmonogramu grupy generuje zajęcia na cały miesiąc,
-* odwołuje pojedyncze zajęcia, a zapisani dostają maila.
+![Strona startowa](docs/landing_new_1280.png)
 
-### Uczestnik (mobile-first):
+<p align="center">
+  <img src="docs/mobile_instructor_lesson.png" width="260" alt="Lista obecności instruktora">
+  <img src="docs/mobile_participant_my_courses.png" width="260" alt="Moje zajęcia uczestnika">
+</p>
 
-* przegląda grafik i zapisuje się do grupy jednym kliknięciem (Turbo, bez przeładowania strony),
-* gdy brak miejsc, trafia na listę rezerwową; gdy ktoś się wypisze, pierwsza osoba z listy wskakuje automatycznie i dostaje maila,
-* widzi swoje zajęcia i stan karnetu.
+![Dashboard admina](docs/desktop_admin_dashboard.png)
 
-### Instruktor:
+## Funkcje
 
-* sprawdza obecność na telefonie (lista z checkboxami), a obecność zdejmuje wejście z karnetu.
-## Model danych
+### Uczestnik
+
+* przegląda grafik pogrupowany w zakładki dni tygodnia,
+* zapisuje się i wypisuje jednym kliknięciem (Turbo Streams, bez przeładowania strony),
+* gdy brak miejsc, trafia na listę rezerwową; gdy ktoś się wypisze, pierwsza osoba z listy automatycznie dostaje miejsce,
+* w „Moich zajęciach” widzi swoje grupy, pozycję na liście rezerwowej, najbliższe zajęcia (odwołane są wyróżnione) i stan karnetu z ostrzeżeniem o ostatnim wejściu lub zbliżającym się końcu ważności.
+
+### Instruktor
+
+* na dashboardzie widzi najbliższe lekcje swoich grup,
+* sprawdza obecność na telefonie (lista z checkboxami),
+* zaznaczenie obecności zdejmuje wejście z karnetu, odznaczenie je zwraca, a ponowne kliknięcie nie zdejmuje drugiego wejścia,
+* przy każdym uczestniku widzi stan karnetu albo informację o jego braku.
+
+### Administrator
+
+* zarządza kursami i grupami (dzień, godzina, instruktor, limit miejsc),
+* generuje zajęcia grupy na cały miesiąc,
+* odwołuje pojedyncze zajęcia,
+* na dashboardzie widzi liczbę aktywnych uczestników, pełne grupy, grupy z listą rezerwową i karnety wygasające w ciągu 7 dni.
+
+## Stack
+
+* Ruby 3.4, Rails 8.1, SQLite
+* Hotwire (Turbo Streams + Stimulus), importmap
+* Tailwind CSS 4
+* RSpec, FactoryBot, shoulda-matchers
+* RuboCop, Brakeman, GitHub Actions
+
+## Uruchomienie
+
+```bash
+git clone git@github.com:kamilszwaradzki/fullstack-ruby-on-rails.git
+cd fullstack-ruby-on-rails
+bin/setup
 ```
-User        (email, name, role: admin/instructor/participant)
+
+`bin/setup` instaluje gemy, tworzy bazę z danymi demo i uruchamia aplikację na http://localhost:3000.
+
+Testy:
+
+```bash
+bundle exec rspec
+```
+
+## Konta demo
+
+Na stronie startowej można zalogować się jednym kliknięciem na każdą rolę.
+
+| Rola | E-mail | Hasło |
+|---|---|---|
+| Uczestnik | student@example.com | Student789! |
+| Instruktor | instructor@example.com | Instructor456! |
+| Administrator | admin@example.com | Admin123! |
+
+Warto sprawdzić:
+
+* **uczestnik**: wypisz się z pełnej grupy bachaty, a pierwsza osoba z listy rezerwowej dostanie miejsce,
+* **instruktor**: zaznacz i odznacz obecność, a liczba wejść w karnecie zmieni się odpowiednio,
+* **administrator**: wygeneruj zajęcia na kolejny miesiąc albo odwołaj lekcję.
+
+## Decyzje techniczne
+
+* **Serwisy**: logika zapisów, obecności i generowania zajęć jest w `EnrollmentService`, `AttendanceService` i `LessonsGeneratorService`, a nie w kontrolerach, dzięki czemu można ją testować osobno.
+* **Transakcje i blokady**: zapis na zajęcia i zdejmowanie wejść działają w transakcji z `lock!`, więc dwa jednoczesne kliknięcia nie przekroczą limitu miejsc ani nie zdejmą dwóch wejść.
+* **Idempotencja**: ponowne oznaczenie obecności nie zdejmuje kolejnego wejścia, a generator zajęć i seedy można uruchamiać wielokrotnie bez duplikatów.
+* **Dostęp do danych**: rekordy są wyszukiwane przez `Current.user`, więc instruktor widzi tylko swoje grupy, a uczestnik nie wypisze cudzego zapisu; sprawdzają to request speci.
+* **Turbo Streams**: jedna odpowiedź kontrolera odświeża kartę grupy na grafiku i usuwa ją z „Moich zajęć”.
+* **Stimulus**: dwa małe kontrolery (zakładki i automatyczne wysyłanie checkboxa obecności) zamiast skryptów w widokach.
+
+## Model danych
+
+```
+User        (email_address, name, role: admin/instructor/participant)
 Course      (name, description, level)
 Group       (course_id, instructor_id, weekday, starts_at, duration, capacity)
 Lesson      (group_id, starts_at, cancelled_at)
 Enrollment  (user_id, group_id, status: active/waitlisted/cancelled, position)
 Pass        (user_id, entries_total, entries_left, valid_until)
-Attendance  (lesson_id, user_id, present)
+Attendance  (lesson_id, user_id, pass_id, present)
 ```
-## Testy i przypadki testowe
-1. User
-- [ ] Email jest wymagany.
-- [ ] Email musi być unikalny.
-- [ ] Rola musi należeć do dozwolonych wartości.
-- [ ] Użytkownik może mieć wiele zapisów (Enrollment).
-- [ ] Użytkownik może mieć wiele karnetów (Pass).
-- [ ] Użytkownik może mieć wiele obecności (Attendance).
-2. Course
-- [ ] Nazwa jest wymagana.
-- [ ] Opis jest opcjonalny (Do ustalenia).
-- [ ] Poziom musi należeć do dozwolonych wartości.
-- [ ] Kurs może mieć wiele grup.
-- [ ] Usunięcie kursu nie powinno przypadkowo usuwać historii zajęć.
-3. Group
-- [ ] Grupa musi należeć do kursu.
-- [ ] Grupa musi mieć instruktora.
-- [ ] Instruktor musi być użytkownikiem z odpowiednią rolą.
-- [ ] Dzień tygodnia musi mieścić się w zakresie 0–6 lub 1–7 (Do ustalenia).
-- [ ] Godzina rozpoczęcia jest wymagana.
-- [ ] Czas trwania musi być większy od zera.
-- [ ] Pojemność musi być większa od zera.
-- [ ] Grupa może mieć wiele lekcji.
-- [ ] Grupa może mieć wiele zapisów.
-4. Lesson
-- [ ] Lekcja musi należeć do grupy.
-- [ ] Data rozpoczęcia jest wymagana.
-- [ ] Lekcja może być anulowana.
-- [ ] Anulowana lekcja nie powinna być traktowana jako zrealizowana.
-- [ ] Lekcja może mieć wiele rekordów obecności.
-5. Enrollment
-- [ ] Zapis musi należeć do użytkownika.
-- [ ] Zapis musi należeć do grupy.
-- [ ] Status musi należeć do dozwolonych wartości.
-- [ ] Pozycja musi być nieujemna.
-- [ ] Użytkownik nie może zapisać się dwa razy do tej samej grupy.
-- [ ] Liczba aktywnych zapisów nie może przekroczyć pojemności grupy.
-- [ ] Zmiana statusu zapisu powinna być poprawnie obsługiwana.
-- [ ] Usunięcie zapisu nie powinno usuwać historii obecności.
-6. Pass
-- [ ] Karnet musi należeć do użytkownika.
-- [ ] Łączna liczba wejść musi być większa od zera.
-- [ ] Liczba pozostałych wejść nie może być ujemna.
-- [ ] Liczba pozostałych wejść nie może przekraczać liczby całkowitej.
-- [ ] Data ważności jest wymagana.
-- [ ] Karnet jest ważny przed upływem terminu ważności.
-- [ ] Karnet jest nieważny po upływie terminu ważności.
-- [ ] Zużycie wejścia zmniejsza entries_left o jeden.
-- [ ] Nie można zużyć wejścia z wyczerpanego karnetu.
-- [ ] Nie można zużyć wejścia z wygasłego karnetu.
-7. Attendance
-- [ ] Obecność musi należeć do lekcji.
-- [ ] Obecność musi należeć do użytkownika.
-- [ ] Pole present jest wymagane.
-- [ ] Użytkownik nie może mieć dwóch rekordów obecności na tej samej lekcji.
-- [ ] Można oznaczyć użytkownika jako obecnego.
-- [ ] Można oznaczyć użytkownika jako nieobecnego.
-- [ ] Nie można rejestrować obecności na anulowanej lekcji.
-- [ ] Użytkownik powinien być zapisany do grupy, do której należy lekcja.
+
+## Testy
+
+88 testów w RSpec: modele (walidacje i asocjacje), serwisy (zapisy, lista rezerwowa, obecność, generowanie zajęć) oraz request speci sprawdzające dostęp każdej roli i odpowiedzi Turbo Stream.
+
+## Co dalej
+
+* maile o odwołaniu zajęć i o awansie z listy rezerwowej,
+* deploy wersji demo.
