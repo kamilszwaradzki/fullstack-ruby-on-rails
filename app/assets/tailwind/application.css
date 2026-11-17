@@ -7,4 +7,6 @@
   .btn-success { @apply bg-green-600 text-white hover:bg-green-700; }
   .btn-notice { @apply bg-yellow-600 text-white hover:bg-yellow-700; }
   .btn-danger { @apply bg-red-600 text-white hover:bg-red-700; }
+  .table-bordered { @apply border-collapse border border-gray-400; }
+  .table-bordered th,.table-bordered td { @apply border border-gray-300; }
 }

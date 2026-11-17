@@ -2,7 +2,7 @@
 <%= link_to "Wróć", admin_groups_path,  class: "btn btn-primary w-1/4 mb-2" %>
 <%= button_to "Wygeneruj zajęcia na następny miesiąc", admin_group_lesson_generation_path(@group), method: :post, class: "btn btn-success w-3/4" %>
 <div class="overflow-x-auto">
-    <table>
+    <table class="table-bordered table-auto">
         <tr>
             <th>Kurs</th>
             <th>Instruktor</th>
@@ -34,7 +34,7 @@
     Brak zaplanowanych zajęć.
 <% else %>
 <div class="overflow-x-auto">
-    <table>
+    <table class="table-bordered table-auto">
         <tr>
             <th>Termin</th>
             <th>Odwołane</th>

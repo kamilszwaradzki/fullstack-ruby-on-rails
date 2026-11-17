@@ -1,2 +1,115 @@
 <%= render "admin/nav" %>
 <h1 class="font-bold">Panel administratora</h1>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <%= render "shared/card", css_class: 'max-w-sm', title: "Liczba aktywnych uczestników" do %>
+        <%= @active_users %>
+    <% end %>
+    <%= render "shared/card", css_class: 'max-w-sm', title: "Grupy Pełne" do %>
+        <table class="table-bordered">
+            <thead>
+                <tr>
+                    <th>Nazwa grupy</th>
+                    <th>Instruktor</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% @groups_full.each do |g_full| %>
+                <tr>
+                    <td><%= g_full.course.name %></td>
+                    <td><%= g_full.instructor.name %></td>
+                    <td><%= link_to 'Pokaż', admin_group_path(g_full), class: "btn btn-primary w-auto" %></td>
+                </tr>
+                <% end %>
+            </tbody>
+        </table>
+    <% end %>
+    <%= render "shared/card", css_class: 'max-w-sm', title: "Grupy z listą rezerwową" do %>
+        
+        <div id="waitlisted-groups" class="overflow-x-auto">
+            <% if @groups_reserved.any? %>
+            <table class="table-bordered">
+                <thead>
+                    <tr>
+                        <th>Nazwa grupy</th>
+                        <th>Instruktor</th>
+                        <th>Link</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% @groups_reserved.each do |g_reserved| %>
+                    <tr>
+                        <td><%= g_reserved.course.name %></td>
+                        <td><%= g_reserved.instructor.name %></td>
+                        <td><%= link_to 'Pokaż', admin_group_path(g_reserved), class: "btn btn-primary" %></td>
+                    </tr>
+                    <% end %>
+                </tbody>
+            </table>
+            <% else %>
+            <p>Brak grup z listą rezerwową.</p>
+            <% end %>
+        </div>
+    <% end %>
+    <%= render "shared/card", css_class: 'max-w-lg', title: "Karnety wygasające w ciągu 7 dni" do %>
+        <table class="table-bordered">
+            <thead>
+                <tr>
+                    <th>Imię i nazwisko</th>
+                    <th>Ważne do</th>
+                    <th>Do wykorzystania</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% @passes_until_week.each do |pass| %>
+                <tr>
+                    <td><%= pass.user.name %></td>
+                    <td><%= l(pass.valid_until, format: :short) %></td>
+                    <td><%= pass.entries_left %>/<%= pass.entries_total %></td>
+                </tr>
+            <% end %>
+            </tbody>
+        </table>
+    <% end %>
+</div>
+<%= render "shared/card", css_class: '', title: "Najbliższe lekcje" do %>
+    <div class="py-4" data-controller="tabs">
+        <div class="overflow-x-auto flex border-b border-gray-200" role="tablist">
+        <% @groups.each_with_index do |group, index| %>
+            <button
+                type="button"
+                role="tab"
+                data-action="click->tabs#select"
+                data-tabs-target="tab"
+                data-tabs-target-panel="every-nearest-lesson-<%= index %>"
+                aria-selected="<%= index == 0 ? "true" : "false" %>"
+                class="px-4 py-2.5 text-sm font-medium border-b-2 <%= index == 0 ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500' %> hover:text-gray-700 hover:border-gray-300 -mb-px transition-colors"
+            >
+                <%= group.course.name %>
+            </button>
+        <% end %>
+        </div>
+        <% @groups.each_with_index do |group, index| %>
+            <div id="every-nearest-lesson-<%= index %>" data-tabs-target="panel" class="<%= index != 0 ? 'hidden' : '' %>">
+                <div class="overflow-x-auto">
+                    <table class="table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Termin</th>
+                                <th>Odwołane</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% group.lessons.upcoming.order(:starts_at).limit(4).each do |lesson| %>
+                            <tr>
+                                <td><%= l(lesson.starts_at, format: :short) %></td>
+                                <td><%= lesson.cancelled? ? 'tak' : 'nie' %></td>
+                            </tr>
+                            <% end %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <% end %>
+    </div>
+<% end %>

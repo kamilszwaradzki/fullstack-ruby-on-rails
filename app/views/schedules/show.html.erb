@@ -1,10 +1,31 @@
 <% if @groups.empty? %>
 Brak grup.
 <% else %>
-  <% @groups.group_by(&:weekday).each do |weekday, groups| %>
-  <h1 class="my-2 font-extrabold"><%= I18n.t("date.day_names")[weekday] %></h1>
-    <% groups.each do |group| %>
-      <%= render "group_card", group: group %>
-    <% end %>
+<div class="py-4" data-controller="tabs">
+  <% group_by_weekday = @groups.group_by(&:weekday) %>
+  <div class="flex border-b border-gray-200 overflow-x-auto" role="tablist">
+  <% group_by_weekday.each_with_index do |(weekday, groups), index| %>
+      <button
+        type="button"
+        role="tab"
+        data-action="click->tabs#select"
+        data-tabs-target="tab"
+        data-tabs-target-panel="schedule-lesson-<%= index %>"
+        aria-selected="<%= index == 0 ? "true" : "false" %>"
+        class="px-4 py-2.5 text-sm font-medium border-b-2 <%= index == 0 ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500' %> hover:text-gray-700 hover:border-gray-300 -mb-px transition-colors"
+      >
+        <%= I18n.t("date.day_names")[weekday] %>
+      </button>
   <% end %>
+  </div>
+  <% group_by_weekday.each_with_index do |(weekday, groups), index| %>
+    <div id="schedule-lesson-<%= index %>" data-tabs-target="panel" class="<%= index != 0 ? 'hidden' : '' %>">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <% groups.each do |group| %>
+        <%= render "group_card", group: group %>
+      <% end %>
+      </div>
+    </div>
+  <% end %>
+</div>
 <% end %>

@@ -1,2 +1,49 @@
 <%= render "instructor/nav" %>
 <h1 class="font-bold">Panel Instruktora</h1>
+<%= render "shared/card", css_class: '', title: "Najbliższe lekcje" do %>
+    <div class="py-4" data-controller="tabs">
+        <div class="overflow-x-auto flex border-b border-gray-200" role="tablist">
+        <% @groups.each_with_index do |group, index| %>
+            <button
+                type="button"
+                role="tab"
+                data-action="click->tabs#select"
+                data-tabs-target="tab"
+                data-tabs-target-panel="nearest-lesson-<%= index %>"
+                aria-selected="<%= index == 0 ? "true" : "false" %>"
+                class="px-4 py-2.5 text-sm font-medium border-b-2 <%= index == 0 ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500' %> hover:text-gray-700 hover:border-gray-300 -mb-px transition-colors"
+            >
+                <%= group.course.name %>
+            </button>
+        <% end %>
+        </div>
+        <% @groups.each_with_index do |group, index| %>
+            <div id="nearest-lesson-<%= index %>" data-tabs-target="panel" class="<%= index != 0 ? 'hidden' : '' %>">
+                <div class="overflow-x-auto">
+                    <table class="table-bordered table-auto">
+                        <thead>
+                            <tr>
+                                <th>Termin</th>
+                                <th>Odwołane</th>
+                                <th>Akcje</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% group.lessons.upcoming.order(:starts_at).limit(4).each do |lesson| %>
+                            <tr>
+                                <td><%= l(lesson.starts_at, format: :short) %></td>
+                                <td><%= lesson.cancelled? ? 'tak' : 'nie' %></td>
+                                <td>
+                                    <% unless lesson.cancelled? %>
+                                        <%= link_to "Obecność", instructor_group_lesson_path(group, lesson), class: "btn btn-notice" %>
+                                    <% end %>
+                                </td>
+                            </tr>
+                            <% end %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        <% end %>
+    </div>
+<% end %>
