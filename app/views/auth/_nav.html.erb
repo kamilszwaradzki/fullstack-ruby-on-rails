@@ -1,0 +1,18 @@
+<div class="flex flex-wrap gap-2 border-b border-gray-200 mb-6 justify-between">
+    <div>
+        <%= link_to "Grafik", schedule_path, class: "rounded px-3 py-2 text-gray-700 hover:bg-gray-100 text-xl font-bold" %>
+        <% if Current.user.admin? %>
+            <%= link_to "Dashboard", admin_root_path, class: "rounded px-3 py-2 text-gray-700 hover:bg-gray-100"  %>
+            <%= link_to "Kursy", admin_courses_path, class: "rounded px-3 py-2 text-gray-700 hover:bg-gray-100"  %>
+            <%= link_to "Grupy", admin_groups_path, class: "rounded px-3 py-2 text-gray-700 hover:bg-gray-100"  %>
+        <% elsif Current.user.instructor? %>
+            <%= link_to "Dashboard", instructor_root_path, class: "rounded px-3 py-2 text-gray-700 hover:bg-gray-100"  %>
+            <%= link_to "Grupy", instructor_groups_path, class: "rounded px-3 py-2 text-gray-700 hover:bg-gray-100"  %>
+        <% else %>
+            <%= link_to "Moje zajęcia", participant_my_courses_path, class: "rounded px-3 py-2 text-gray-700 hover:bg-gray-100" %>
+        <% end %>
+    </div>
+    <div>
+        <%= button_to "Wyloguj", session_path, method: :delete, class: "rounded px-3 py-2 text-gray-700 hover:bg-gray-100" %>
+    </div>
+</div>

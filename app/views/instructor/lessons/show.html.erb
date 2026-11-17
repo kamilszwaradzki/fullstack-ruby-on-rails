@@ -1,9 +1,7 @@
-<%= render "instructor/nav" %>
-
-<h1 class="font-bold"><%= "#{l(@lesson.starts_at, format: :short)} #{@group.course.name}" %></h1>
+<h1 class="font-bold text-2xl mb-2"><%= "#{l(@lesson.starts_at, format: :short)} #{@group.course.name}" %></h1>
 
 <%= link_to "Wróć", instructor_group_path(@group),
-    class: "btn btn-primary w-1/4 mb-2" %>
+    class: "self-start btn btn-primary mb-2" %>
 
 <% if @enrollments.empty? %>
   <p>Brak uczestników zajęć.</p>

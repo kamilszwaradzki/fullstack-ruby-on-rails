@@ -4,6 +4,6 @@ class ParticipantController < ApplicationController
   private
 
   def require_participant
-    redirect_to root_path, alert: "Brak dostępu" unless Current.user.participant?
+    redirect_to schedule_path, alert: "Brak dostępu" unless Current.user.participant?
   end
 end

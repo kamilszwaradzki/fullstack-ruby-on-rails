@@ -1,5 +1,4 @@
-<%= render "instructor/nav" %>
-<h1 class="font-bold">Panel Instruktora</h1>
+<h1 class="font-bold text-2xl mb-2">Panel Instruktora</h1>
 <%= render "shared/card", css_class: '', title: "Najbliższe lekcje" do %>
     <div class="py-4" data-controller="tabs">
         <div class="overflow-x-auto flex border-b border-gray-200" role="tablist">
@@ -35,7 +34,7 @@
                                 <td><%= lesson.cancelled? ? 'tak' : 'nie' %></td>
                                 <td>
                                     <% unless lesson.cancelled? %>
-                                        <%= link_to "Obecność", instructor_group_lesson_path(group, lesson), class: "btn btn-notice" %>
+                                        <%= link_to "Obecność", instructor_group_lesson_path(group, lesson), class: "btn btn-notice py-1 text-sm" %>
                                     <% end %>
                                 </td>
                             </tr>

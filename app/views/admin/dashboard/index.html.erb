@@ -1,8 +1,7 @@
-<%= render "admin/nav" %>
-<h1 class="font-bold">Panel administratora</h1>
+<h1 class="font-bold text-2xl mb-2">Panel administratora</h1>
 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <%= render "shared/card", css_class: 'max-w-sm', title: "Liczba aktywnych uczestników" do %>
-        <%= @active_users %>
+        <p class="text-5xl text-center py-10 <%= @active_users > 0 ? 'text-green-600' : 'text-red-600' %>"><%= @active_users %></p>
     <% end %>
     <%= render "shared/card", css_class: 'max-w-sm', title: "Grupy Pełne" do %>
         <table class="table-bordered">
@@ -64,7 +63,7 @@
             <% @passes_until_week.each do |pass| %>
                 <tr>
                     <td><%= pass.user.name %></td>
-                    <td><%= l(pass.valid_until, format: :short) %></td>
+                    <td><%= l(pass.valid_until, format: "%d.%m.%Y") %></td>
                     <td><%= pass.entries_left %>/<%= pass.entries_total %></td>
                 </tr>
             <% end %>

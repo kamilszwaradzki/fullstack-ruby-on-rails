@@ -4,7 +4,7 @@
         <ul class="text-gray-700 text-base">
             <li><%= group.starts_at.strftime("%H:%M") %></li>
             <li><%= group.instructor.name %></li>
-            <li>Wolne miejsca: <%= group.free_spots %> z <%= group.capacity %></li>
+            <li>Wolne miejsca: <% if group.free_spots <= 0 %> Brak miejsc. <% else %> <%= group.free_spots %> z <%= group.capacity %> <% end %></li>
             <li>
                 <%
                 button_label = group.full? ? "Dołącz do listy rezerwowej" : "Zapisz się"
@@ -28,7 +28,7 @@
                 <% if group.lessons.upcoming.empty? %>
                 Brak zaplanowanych zajęć.
                 <% else %>
-                <h1 class="font-extrabold mt-10 text-green-600 mx-auto">Najbliższe zajęcia</h1>
+                <h1 class="font-bold text-lg mt-10 text-green-600 mx-auto">Najbliższe zajęcia</h1>
                 <hr/>
                 <div class="overflow-x-auto">
                     <table class="table-bordered table-auto">

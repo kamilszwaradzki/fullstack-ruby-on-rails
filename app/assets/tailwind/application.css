@@ -8,5 +8,6 @@
   .btn-notice { @apply bg-yellow-600 text-white hover:bg-yellow-700; }
   .btn-danger { @apply bg-red-600 text-white hover:bg-red-700; }
   .table-bordered { @apply border-collapse border border-gray-400; }
-  .table-bordered th,.table-bordered td { @apply border border-gray-300; }
+  .table-bordered th,.table-bordered td { @apply border border-gray-300 px-3 py-2; }
+  .table-bordered th { @apply bg-gray-50; }
 }
