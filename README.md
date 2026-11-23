@@ -6,6 +6,8 @@ Aplikacja dla małej szkoły tańca: uczestnicy zapisują się na zajęcia z gra
 a gdy grupa jest pełna, trafiają na listę rezerwową. Instruktor sprawdza obecność
 na telefonie, a każda obecność zdejmuje wejście z karnetu.
 
+**Demo:** https://dance-school-rails.onrender.com/ (logowanie jednym kliknięciem na każdą rolę; pierwsze wczytanie może potrwać chwilę, bo darmowy serwer Render usypia się po okresie bezczynności)
+
 ![Strona startowa](docs/landing_new_1280.png)
 
 <p align="center">
@@ -64,7 +66,7 @@ bundle exec rspec
 
 ## Konta demo
 
-Na stronie startowej można zalogować się jednym kliknięciem na każdą rolę.
+Na stronie startowej ([demo](https://dance-school-rails.onrender.com/) albo lokalnie) można zalogować się jednym kliknięciem na każdą rolę.
 
 | Rola | E-mail | Hasło |
 |---|---|---|
@@ -105,5 +107,4 @@ Attendance  (lesson_id, user_id, pass_id, present)
 
 ## Co dalej
 
-* maile o odwołaniu zajęć i o awansie z listy rezerwowej,
-* deploy wersji demo.
+* maile o odwołaniu zajęć i o awansie z listy rezerwowej.
