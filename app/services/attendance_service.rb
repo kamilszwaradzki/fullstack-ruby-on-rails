@@ -31,16 +31,16 @@ class AttendanceService
   end
   def mark_absent
     Attendance.transaction do
-        attendance = @lesson.attendances.find_or_create_by!(user: @user)
-        attendance.lock!
-        attendance.update!(present: false)
-        current_pass = attendance.pass
-        if current_pass
-          current_pass.lock!
-          current_pass.update!(entries_left: current_pass.entries_left + 1)
-          attendance.update!(pass: nil)
-        end
-        return :absent
+      attendance = @lesson.attendances.find_or_create_by!(user: @user)
+      attendance.lock!
+      attendance.update!(present: false)
+      current_pass = attendance.pass
+      if current_pass
+        current_pass.lock!
+        current_pass.update!(entries_left: current_pass.entries_left + 1)
+        attendance.update!(pass: nil)
+      end
+      return :absent
     end
   end
 end
