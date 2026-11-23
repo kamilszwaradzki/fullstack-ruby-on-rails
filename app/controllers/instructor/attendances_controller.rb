@@ -6,7 +6,13 @@ class Instructor::AttendancesController < InstructorController
 
     if lesson.cancelled?
       redirect_to instructor_group_lesson_path(@group, lesson),
-                  alert: "Nie można zmienić obecności na odwołanej lekcji."
+                  alert: t(".cancelled_lesson")
+      return
+    end
+
+    unless lesson.started?
+      redirect_to instructor_group_lesson_path(@group, lesson),
+                  alert: t(".not_started")
       return
     end
 
@@ -25,10 +31,10 @@ class Instructor::AttendancesController < InstructorController
     case result
     when :present_without_pass
       redirect_to instructor_group_lesson_path(@group, lesson),
-                  alert: "Uczestnik został oznaczony jako obecny, ale nie posiada ważnego karnetu."
+                  alert: t(".present_without_pass")
     else
       redirect_to instructor_group_lesson_path(@group, lesson),
-                  notice: "Zaktualizowano obecność uczestnika."
+                  notice: t(".success")
     end
   end
 end

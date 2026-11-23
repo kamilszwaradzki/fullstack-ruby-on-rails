@@ -4,6 +4,6 @@ class Admin::LessonGenerationsController < AdminController
     @date = Date.current.next_month
     service = LessonsGeneratorService.new(@group, @date)
     total_lessons = service.call
-    redirect_to admin_group_path(@group), notice: "Utworzono #{total_lessons} lekcje"
+    redirect_to admin_group_path(@group), notice: t(".success", count: total_lessons)
   end
 end

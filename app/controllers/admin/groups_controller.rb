@@ -12,7 +12,7 @@ class Admin::GroupsController < AdminController
     @group = Group.new(group_params)
 
     if @group.save
-      redirect_to admin_groups_path, notice: "Grupa została dodana"
+      redirect_to admin_groups_path, notice: t(".success")
     else
       render :new, status: :unprocessable_entity
     end
@@ -27,7 +27,7 @@ class Admin::GroupsController < AdminController
 
   def update
     if @group.update(group_params)
-      redirect_to admin_groups_path, notice: "Grupa została zmodyfikowana"
+      redirect_to admin_groups_path, notice: t(".success")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -35,7 +35,7 @@ class Admin::GroupsController < AdminController
 
   def destroy
     if @group.destroy
-      redirect_to admin_groups_path, notice: "Grupa została usunięta", status: :see_other
+      redirect_to admin_groups_path, notice: t(".success"), status: :see_other
     else
       redirect_to admin_groups_path, alert: @group.errors.full_messages.to_sentence, status: :see_other
     end

@@ -6,18 +6,18 @@ class EnrollmentsController < ApplicationController
     case result
     when :enrolled
       flash_type = :notice
-      message = "Zostałeś zapisany"
+      message = t(".enrolled")
     when :waitlisted
       position = group.enrollments.find_by(user: Current.user).position
 
       flash_type = :notice
-      message = "Zostałeś dodany do listy oczekujących, pozycja #{position}"
+      message = t(".waitlisted", position: position)
     when :already_enrolled
       flash_type = :alert
-      message = "Jesteś już zapisany"
+      message = t(".already_enrolled")
     else
       flash_type = :alert
-      message = "Coś poszło nie tak..."
+      message = t("flash.something_went_wrong")
     end
 
     group.reload
@@ -33,13 +33,13 @@ class EnrollmentsController < ApplicationController
     case result
     when :uncancellable
       flash_type = :alert
-      message = "Wypisanie się jest niewykonalne"
+      message = t(".uncancellable")
     when :cancelled
       flash_type = :notice
-      message = "Zostałeś wypisany"
+      message = t(".cancelled")
     else
       flash_type = :alert
-      message = "Coś poszło nie tak..."
+      message = t("flash.something_went_wrong")
     end
 
     group.reload

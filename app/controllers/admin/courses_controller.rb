@@ -12,7 +12,7 @@ class Admin::CoursesController < AdminController
     @course = Course.new(course_params)
 
     if @course.save
-      redirect_to admin_courses_path, notice: "Kurs został dodany"
+      redirect_to admin_courses_path, notice: t(".success")
     else
       render :new, status: :unprocessable_entity
     end
@@ -27,7 +27,7 @@ class Admin::CoursesController < AdminController
 
   def update
     if @course.update(course_params)
-      redirect_to admin_courses_path, notice: "Kurs został zmodyfikowany"
+      redirect_to admin_courses_path, notice: t(".success")
     else
       render :edit, status: :unprocessable_entity
     end
@@ -35,7 +35,7 @@ class Admin::CoursesController < AdminController
 
   def destroy
     if @course.destroy
-      redirect_to admin_courses_path, notice: "Kurs został usunięty", status: :see_other
+      redirect_to admin_courses_path, notice: t(".success"), status: :see_other
     else
       redirect_to admin_courses_path, alert: @course.errors.full_messages.to_sentence, status: :see_other
     end

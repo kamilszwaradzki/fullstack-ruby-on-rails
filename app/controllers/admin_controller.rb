@@ -4,6 +4,6 @@ class AdminController < ApplicationController
   private
 
   def require_admin
-    redirect_to root_path, alert: "Brak dostępu" unless Current.user.admin?
+    redirect_to root_path, alert: t("flash.access_denied") unless Current.user.admin?
   end
 end
