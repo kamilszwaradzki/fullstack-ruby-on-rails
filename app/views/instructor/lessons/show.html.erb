@@ -3,6 +3,10 @@
 <%= link_to "Wróć", instructor_group_path(@group),
     class: "self-start btn btn-primary mb-2" %>
 
+<% unless @lesson.started? %>
+  <p class="text-sm text-gray-500">Obecność można sprawdzić dopiero od rozpoczęcia zajęć.</p>
+<% end %>
+
 <% if @enrollments.empty? %>
   <p>Brak uczestników zajęć.</p>
 <% else %>
@@ -39,6 +43,7 @@
             <span class="sr-only">Obecność: <%= user.name %></span>
             <%= check_box_tag :presence, "1", present,
                 id: dom_id(user, :presence),
+                disabled: !@lesson.started?,
                 class: "w-6 h-6" %>
           <% end %>
 

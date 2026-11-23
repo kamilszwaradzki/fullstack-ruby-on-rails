@@ -28,7 +28,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% group.lessons.upcoming.order(:starts_at).limit(4).each do |lesson| %>
+                            <% group.lessons.from_today.order(:starts_at).limit(4).each do |lesson| %>
                             <tr>
                                 <td><%= l(lesson.starts_at, format: :short) %></td>
                                 <td><%= lesson.cancelled? ? 'tak' : 'nie' %></td>

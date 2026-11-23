@@ -3,7 +3,7 @@ class InstructorController < ApplicationController
 
   private
   def require_instructor
-    redirect_to root_path, alert: "Brak dostępu" unless Current.user.instructor? || Current.user.admin?
+    redirect_to root_path, alert: t("flash.access_denied") unless Current.user.instructor? || Current.user.admin?
   end
 
   protected

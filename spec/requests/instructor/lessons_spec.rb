@@ -24,7 +24,7 @@ RSpec.describe "Instructor::Lessons", type: :request do
     create(:group, instructor: other_instructor)
   end
 
-  let(:lesson) { create(:lesson, group: group) }
+  let(:lesson) { create(:lesson, group: group, starts_at: 1.hour.ago) }
 
   describe "GET /instructor/groups/:group_id/lessons/:id" do
     before do
@@ -79,6 +79,20 @@ RSpec.describe "Instructor::Lessons", type: :request do
                 presence: "1"
               }
       }.to change { pass.reload.entries_left }.by(-1)
+    end
+
+    it "does not mark attendance before the lesson starts" do
+      future_lesson = create(:lesson, group: group, starts_at: 1.day.from_now)
+
+      expect {
+        patch instructor_group_lesson_attendance_path(group, future_lesson),
+              params: {
+                user_id: student.id,
+                presence: "1"
+              }
+      }.not_to change { pass.reload.entries_left }
+
+      expect(response).to redirect_to(instructor_group_lesson_path(group, future_lesson))
     end
 
     it "returns 404 when marking attendance in another instructor's group" do
